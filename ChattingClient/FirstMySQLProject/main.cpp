@@ -35,7 +35,22 @@ void login() {
         if (result->next()) { //if문을 통한 조건 추가
             while (1) {
                 cout << "pw를 입력해주세요." << endl;
-                cin >> spw;
+                spw = "";
+                char ch = ' ';
+                while (ch != 13) { // Enter 키를 누르면 입력 종료
+                    ch = _getch();
+                    if (ch == 13) break; // Enter 키를 누르면 입력 종료
+                    if (ch == 8) { // Backspace 키인 경우
+                        if (!spw.empty()) { // 입력된 문자가 있으면
+                            spw.pop_back(); // 마지막 문자를 삭제
+                            cout << "\b \b"; // 커서 위치를 왼쪽으로 이동시켜 공백을 출력한 뒤, 다시 커서 위치를 원래대로 이동시킴
+                        }
+                    }
+                    else {
+                        spw.push_back(ch);
+                        cout << '*'; // 별표로 대체하여 출력
+                    }
+                }
                 cout << endl;
                 pstmt = con->prepareStatement("SELECT pw FROM user WHERE pw = ?;");
                 pstmt->setString(1, spw);
@@ -200,7 +215,22 @@ void sign_up() {
     cout << endl << endl;
     cout << "PW를 입력해주세요" << endl;
     cout << ": ";
-    cin >> spw;
+    spw = "";
+    char ch = ' ';
+    while (ch != 13) { // Enter 키를 누르면 입력 종료
+        ch = _getch();
+        if (ch == 13) break; // Enter 키를 누르면 입력 종료
+        if (ch == 8) { // Backspace 키인 경우
+            if (!spw.empty()) { // 입력된 문자가 있으면
+                spw.pop_back(); // 마지막 문자를 삭제
+                cout << "\b \b"; // 커서 위치를 왼쪽으로 이동시켜 공백을 출력한 뒤, 다시 커서 위치를 원래대로 이동시킴
+            }
+        }
+        else {
+            spw.push_back(ch);
+            cout << '*'; // 별표로 대체하여 출력
+        }
+    }
     cout << endl << endl;
     
     pstmt = con->prepareStatement("SELECT name, birth, phone, id, pw FROM user WHERE name = ? OR phone = ? OR id = ?");
@@ -250,10 +280,10 @@ int main()
     stmt->execute("set names euckr");
     if (stmt) { delete stmt; stmt = nullptr; }
 
-    //login();
-    //id_search();
+    login();
+    id_search();
     pw_search();
-    //sign_up();
+    sign_up();
 
     // MySQL Connector/C++ 정리
     delete pstmt;
