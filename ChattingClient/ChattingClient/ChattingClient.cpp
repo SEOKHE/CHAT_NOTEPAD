@@ -1,11 +1,12 @@
 ﻿#pragma comment(lib, "ws2_32.lib")
 
-#include <WinSock2.h> //Winsock 헤더파일 include. WSADATA 들어있음.ㄴ
+#include <WinSock2.h> //Winsock 헤더파일 include. WSADATA 들어있음.
 #include <WS2tcpip.h>
 #include <string>
 #include <sstream>
 #include <iostream>
 #include <thread>
+#include <conio.h>
 
 #define MAX_SIZE 1024
 
@@ -16,6 +17,7 @@ using std::string;
 
 SOCKET client_sock;
 string my_nick;
+
 
 int chat_recv() {
     char buf[MAX_SIZE] = { };
