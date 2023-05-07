@@ -9,6 +9,7 @@
 #include <conio.h>
 #include <thread>
 #include <vector>
+#include <windows.h>
 
 #define MAX_SIZE 1024
 
@@ -52,14 +53,17 @@ int chat_recv() {
     }
 }
 
-//채팅 내역은 서버에서 해결할것//
 
 void login() {
-    cout << "로그인을 진행합니다." << endl << endl;
+
     int button = 0;
     int count = 5;
+    string okay;
+
     while (1) {
-        cout << "id를 입력해주세요." << endl;
+        system("cls");
+        cout << "▶ id를 입력해주세요." << endl << endl;
+        cout << "▷ ";
         cin >> sid;
         cout << endl << endl;
         pstmt = con->prepareStatement("SELECT id FROM user WHERE id = ?;");
@@ -70,7 +74,8 @@ void login() {
         if (result->next()) { //if문을 통한 조건 추가
             while (count > 0) {
                 cout << "비밀 번호 5회 입력 실패시 메인 화면으로 돌아갑니다. (현재 " << count << "회 남음)" << endl << endl;
-                cout << "pw를 입력해주세요." << endl;
+                cout << "▶ pw를 입력해주세요." << endl << endl;
+                cout << "▷ ";
                 spw = "";
                 char ch = ' ';
                 while (ch != 13) { // Enter 키를 누르면 입력 종료
@@ -94,13 +99,17 @@ void login() {
                 result = pstmt->executeQuery();
 
                 if (result->next()) { //if문을 통한 조건 추가
+                    system("cls");
                     cout << "로그인이 완료되었습니다." << endl << endl;
                     sname = result->getString("name");
+                    cout << sname << "님 환영합니다!";
+                    Sleep(3000);
                     count = 5;
                     button = 1;
                     break;
                 }
                 else {
+                    system("cls");
                     cout << "잘못된 PW입니다. 다시 입력해주세요." << endl << endl;
                     count--;
                 }
@@ -111,6 +120,7 @@ void login() {
         }
         else {
             cout << "존재하지 않는 ID입니다. 다시 입력해주세요." << endl << endl;
+            Sleep(1000);
         }
         if (button == 1) {
             break;
@@ -119,17 +129,17 @@ void login() {
 }
 
 void id_search() {
-
-    cout << "이름을 입력해주세요" << endl;
-    cout << ": ";
+    system("cls");
+    cout << "▶ 이름을 입력해주세요" << endl << endl;
+    cout << "▷ ";
     cin >> sname;
     cout << endl << endl;
-    cout << "'-' 없이 전화번호를 입력해주세요" << endl;
-    cout << ": ";
+    cout << "▶ '-' 없이 전화번호를 입력해주세요" << endl << endl;
+    cout << "▷ ";
     cin >> sphone;
     cout << endl << endl;
-    cout << "생일 8자리를 입력해주세요" << endl;
-    cout << ": ";
+    cout << "▶ 생일 8자리를 입력해주세요" << endl << endl;
+    cout << "▷ ";
     cin >> sbirth;
     cout << endl << endl;
 
@@ -140,26 +150,33 @@ void id_search() {
     result = pstmt->executeQuery();//SELECT된 결과 저장
 
     if (result->next()) { //if문을 통해 result안에 있는 결과들을 모두 출력시키는 출력부
+        system("cls");
         cout << endl << sname << "님의 ID는 " << result->getString(1) << " 입니다." << endl << endl;
+        Sleep(3000);
     }
-    else cout << "존재하지 않는 회원입니다." << endl << endl;
+    else { 
+        system("cls");
+        cout << "존재하지 않는 회원입니다." << endl << endl; 
+        Sleep(1000);
+    }
 }
 
 void pw_search() {
-    cout << "ID를 입력해주세요" << endl;
-    cout << ": ";
+    system("cls");
+    cout << "▶ ID를 입력해주세요" << endl << endl;
+    cout << "▷ ";
     cin >> sid;
     cout << endl << endl;
-    cout << "이름을 입력해주세요" << endl;
-    cout << ": ";
+    cout << "▶ 이름을 입력해주세요" << endl << endl;
+    cout << "▷ ";
     cin >> sname;
     cout << endl << endl;
-    cout << "'-' 없이 전화번호를 입력해주세요" << endl;
-    cout << ": ";
+    cout << "▶ '-' 없이 전화번호를 입력해주세요" << endl << endl;
+    cout << "▷ ";
     cin >> sphone;
     cout << endl << endl;
-    cout << "생일 8자리를 입력해주세요" << endl;
-    cout << ": ";
+    cout << "▶ 생일 8자리를 입력해주세요" << endl << endl;
+    cout << "▷ ";
     cin >> sbirth;
     cout << endl << endl;
 
@@ -171,10 +188,11 @@ void pw_search() {
     result = pstmt->executeQuery();
 
     if (result->next()) { //if문을 통한 조건 추가
-        
+
         while (1) {
-            cout << "변경할 pw를 입력해주세요" << endl;
-            cout << ": ";
+            system("cls");
+            cout << "▶ 변경할 pw를 입력해주세요" << endl << endl;
+            cout << "▷ ";
             spw = "";
             char ch = ' ';
             while (ch != 13) { // Enter 키를 누르면 입력 종료
@@ -193,8 +211,8 @@ void pw_search() {
             }
             cout << endl << endl;
 
-            cout << "한번 더 입력해주세요" << endl;
-            cout << ": ";
+            cout << "▶ 한번 더 입력해주세요" << endl << endl;
+            cout << "▷ ";
 
             npw = "";
             char ch2 = ' ';
@@ -216,6 +234,7 @@ void pw_search() {
             cout << endl << endl;
             if (spw != npw) { //if문을 통한 일치여부 검사
                 cout << "비밀번호가 일치하지 않습니다. 다시 입력해주세요." << endl << endl;
+                Sleep(1000);
             }
             else break;
         }
@@ -226,33 +245,38 @@ void pw_search() {
         result = pstmt->executeQuery();
 
         cout << "PW 변경이 완료되었습니다." << endl << endl;
+        Sleep(1000);
     }
-    else cout << "존재하지 않는 회원입니다." << endl << endl;
+    else {
+        cout << "존재하지 않는 회원입니다." << endl << endl;
+        Sleep(1000);
+    }
 }
 
 void sign_up() {
+    system("cls");
     cout << "회원 가입을 진행하겠습니다." << endl;
     //이름, 생일, 전화번호, 아이디, 비번 순으로 입력받기
     //INSERT INTO 사용할것.
 
-    cout << endl << "이름을 입력해주세요" << endl;
-    cout << ": ";
+    cout << endl << "▶ 이름을 입력해주세요" << endl << endl;
+    cout << "▷ ";
     cin >> sname;
     cout << endl << endl;
-    cout << "생일 8자리를 입력해주세요" << endl;
-    cout << ": ";
+    cout << "▶ 생일 8자리를 입력해주세요" << endl << endl;
+    cout << "▷ ";
     cin >> sbirth;
     cout << endl << endl;
-    cout << "'-' 없이 전화번호를 입력해주세요" << endl;
-    cout << ": ";
+    cout << "▶ '-' 없이 전화번호를 입력해주세요" << endl << endl;
+    cout << "▷ ";
     cin >> sphone;
     cout << endl << endl;
-    cout << "ID를 입력해주세요" << endl;
-    cout << ": ";
+    cout << "▶ ID를 입력해주세요" << endl << endl;
+    cout << "▷ ";
     cin >> sid;
     cout << endl << endl;
-    cout << "PW를 입력해주세요" << endl;
-    cout << ": ";
+    cout << "▶ PW를 입력해주세요" << endl << endl;
+    cout << "▷ ";
     spw = "";
     char ch = ' ';
     while (ch != 13) { // Enter 키를 누르면 입력 종료
@@ -278,6 +302,7 @@ void sign_up() {
     result = pstmt->executeQuery();
 
     if (result->next()) { //if문을 통한 조건 추가
+        system("cls");
         cout << "이미 존재하는 회원입니다." << endl;
     }
     else {
@@ -289,23 +314,29 @@ void sign_up() {
         pstmt->setString(5, spw);
         result = pstmt->executeQuery();
 
+        system("cls");
         cout << "회원 가입이 완료되었습니다." << endl;
-        cout << sid << "님 환영합니다!" << endl;
+        cout << sname << "님 환영합니다!" << endl;
+        Sleep(3000);
+
     }
 }
 
 void main_My_profile() {
-    int c_num, button = 0;
-    string instatus, insongs;
-    
+    int  c_num, button = 0;
+    string instatus, insongs, okay;
     while (1) {
+        okay = 1;
+        system("cls");
         cout << ">> 내 정보 <<" << endl << endl;
-        cout << "1. 내 정보 보기, 2. 상메 설정/수정, 3. 노래 설정/수정 0. 뒤로 가기" << endl;
+        cout << "▶ 1. 내 정보 보기" << endl << endl << "▶ 2. 상메 설정 / 수정" << endl << endl <<  "▶ 3. 노래 설정 / 수정"  << endl << endl << "▶ 0. 뒤로 가기" << endl << endl;
+        cout << "▷ ";
         cin >> c_num;
         cout << endl << endl;
 
         switch (c_num) {
             case 1:
+                system("cls");
                 cout << ">> 내 정보 <<" << endl << endl;
                 pstmt = con->prepareStatement("SELECT status, songs, RIGHT(birth, 4) AS 'birth' FROM user WHERE id = ? AND pw = ?;");
                 pstmt->setString(1, sid);
@@ -318,12 +349,23 @@ void main_My_profile() {
                     cout << "생일 : " << result->getString("birth") << endl;
                 }
                 cout << endl << endl;
-                break;
+
+                cout << "▶ 이전 페이지로 가려면 아무 키나 입력해주십시오." << endl << endl;
+                cout << "▷ ";
+                cin >> okay;
+
+                if (okay == "0") {
+                    break;
+                }
+                else continue;
 
             case 2:
+                system("cls");
                 cout << ">> 상태 메시지 설정/수정 <<" << endl << endl;
                 cout << "변경할 상태 메시지를 입력해주세요" << endl;
-                cin >> instatus;
+                cin.ignore();
+
+                getline(cin, instatus);
                 cout << endl << endl;
 
                 pstmt = con->prepareStatement("UPDATE user SET status = ? WHERE id = ? AND pw = ?;");
@@ -332,12 +374,17 @@ void main_My_profile() {
                 pstmt->setString(3, spw);
                 result = pstmt->executeQuery();
                 cout << endl << endl;
+
+                cout << "▶ 상태 메시지 설정이 완료되었습니다." << endl << endl;
+                Sleep(1000);
                 break;
 
             case 3:
+                system("cls");
                 cout << ">> 노래 설정/수정 <<" << endl;
                 cout << "변경할 노래 제목을 입력해주세요" << endl;
-                cin >> insongs;
+                cin.ignore();
+                getline(cin, insongs);
                 cout << endl << endl;
 
                 pstmt = con->prepareStatement("UPDATE user SET songs = ? WHERE id = ? AND pw = ?;");
@@ -346,14 +393,21 @@ void main_My_profile() {
                 pstmt->setString(3, spw);
                 result = pstmt->executeQuery();
                 cout << endl << endl;
+                
+                cout << "▶ 노래 설정이 완료되었습니다." << endl << endl;
+                Sleep(1000);
                 break;
 
             case 0:
+                system("cls");
                 button = 1;
                 break;
 
             default:
+                
                 cout << "잘못된 입력입니다. 다시 입력해주세요." << endl;
+                Sleep(1000);
+                break;
         }
         if (button == 1) {
             break;
@@ -363,19 +417,22 @@ void main_My_profile() {
 }
 
 void main_Friends() {
-    int c_num, button = 0;
-    string instatus, insongs, inbirth1, inbirth2;
-
+    int  c_num, button = 0;
+    string okay,instatus, insongs, inbirth1, inbirth2;
+    
     while (1) {
+        system("cls");
         cout << ">> 친구 <<" << endl << endl;
-        cout << "1. 친구 목록 보기, 2. 생일 검색 0. 뒤로 가기" << endl;
+        cout << "▶ 1. 친구 목록 보기" << endl << endl << "▶ 2. 생일 검색" << endl << endl << "▶ 0. 뒤로 가기" << endl << endl;
+        cout << "▷ ";
         cin >> c_num;
         cout << endl << endl;
 
         switch (c_num) {
         case 1:
+            system("cls");
             cout << ">> 친구 목록 <<" << endl << endl;
-            pstmt = con->prepareStatement("SELECT name, status, songs, RIGHT(birth, 4) AS 'birth' FROM user WHERE id != ? AND pw != ?;");
+            pstmt = con->prepareStatement("SELECT name, status, songs, RIGHT(birth, 4) AS 'birth' FROM user WHERE id != ? AND pw != ? ORDER BY name;");
             pstmt->setString(1, sid);
             pstmt->setString(2, spw);
             result = pstmt->executeQuery();
@@ -389,18 +446,30 @@ void main_Friends() {
                 cout << endl << "------------------------------" << endl;
             }
             cout << endl << endl;
-            break;
+
+            cout << "▶ 이전 페이지로 가려면 아무 키나 입력해주십시오." << endl << endl;
+            cout << "▷ ";
+            cin >> okay;
+
+            if (okay == "0") {
+                break;
+            }
+            else continue;
 
         case 2:
+            
+            system("cls");
             cout << ">> 생일 검색하기 <<" << endl << endl;
-            cout << "조회를 시작할 생일 4자리를 입력해주세요. (ex. 0101)" << endl;
+            cout << "▶ 조회를 시작할 생일 4자리를 입력해주세요. (ex. 0101)" << endl << endl;
+            cout << "▷ ";
             cin >> inbirth1;
             cout << endl << endl;
 
-            cout << "조회를 끝낼 생일 4자리를 입력해주세요. (ex. 0101)" << endl;
+            cout << "▶ 조회를 끝낼 생일 4자리를 입력해주세요. (ex. 0101)" << endl << endl;
+            cout << "▷ ";
             cin >> inbirth2;
-
-            pstmt = con->prepareStatement("SELECT name, RIGHT(birth, 4) AS 'birth' FROM user WHERE RIGHT(birth, 4) > ? AND RIGHT(birth, 4) < ?;");
+            
+            pstmt = con->prepareStatement("SELECT name, RIGHT(birth, 4) AS 'birth' FROM user WHERE RIGHT(birth, 4) > ? AND RIGHT(birth, 4) < ? ORDER BY birth;");
             pstmt->setString(1, inbirth1);
             pstmt->setString(2, inbirth2);
             result = pstmt->executeQuery();
@@ -417,9 +486,21 @@ void main_Friends() {
                     }
                 }
             }
-            else cout << "조회하신 기간 내에 생일인 친구가 없습니다." << endl << endl;
+            else {
+                cout << "조회하신 기간 내에 생일인 친구가 없습니다." << endl << endl;
+                cout << "1초 뒤 이전 페이지로 이동합니다." << endl << endl;
+                Sleep(1000);
+                break;
+            }
+            
+            cout << "▶ 이전 페이지로 가려면 아무 키나 입력해주십시오." << endl << endl;
+            cout << "▷ ";
+            cin >> okay;
 
-            break;
+            if (okay == "0") {
+                break;
+            }
+            else continue;
 
         case 0:
             button = 1;
@@ -427,6 +508,9 @@ void main_Friends() {
 
         default:
             cout << "잘못된 입력입니다. 다시 입력해주세요." << endl;
+            cout << "1초 뒤 이전 페이지로 이동합니다." << endl;
+            Sleep(1000);
+            break;
         }
         if (button == 1) {
             break;
@@ -435,6 +519,7 @@ void main_Friends() {
 }
 
 void chatting() {
+    system("cls");
     cout << "채팅방에 입장합니다." << endl;
     WSADATA wsa;
 
@@ -442,7 +527,7 @@ void chatting() {
 
     if (!code) {
 
-        client_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); // 
+        client_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);  
 
         SOCKADDR_IN client_addr = {};
         client_addr.sin_family = AF_INET;
@@ -460,36 +545,54 @@ void chatting() {
 
         std::thread th2(chat_recv);
 
+        pstmt = con->prepareStatement("SELECT name, time, chat FROM chat;");
+        result = pstmt->executeQuery();
+        while (result->next()) {
+            cout << endl << "---------------------------------------------------------" << endl;
+            cout << "이름 : " << result->getString("name") << endl;
+            cout << "채팅 : " << result->getString("chat") << endl;
+            cout << "보낸 시간 : " << result->getString("time") << endl;
+            cout << "---------------------------------------------------------" << endl;
+        }
+
         while (1) {
             string text;
+            cout << "  ";
             std::getline(cin, text);
             const char* buffer = text.c_str(); // string형을 char* 타입으로 변환
             send(client_sock, buffer, strlen(buffer), 0);
-            if (buffer == "/exit") {
+            if (text == "/quit") {
+                closesocket(client_sock);
                 break;
             }
         }
         th2.join();
-        closesocket(client_sock);
+        //closesocket(client_sock);
     }
 }
 
-void setting() {
-    int num, c_num, button = 0;
+int setting() {
+    int num, c_num, button = 0, o_button = 0;
     string hpw;
     char ch = ' ';
     npw = "";
     char ch2 = ' ';
+    
     while (1) {
+        system("cls");
         cout << endl << ">> 설정 <<" << endl << endl;
-        cout << "1. 비밀번호 변경 2. 회원 탈퇴 0. 뒤로 가기" << endl;
+        cout << "▶ 1. 비밀번호 변경" << endl << endl << "▶ 2. 회원 탈퇴" << endl << endl << "▶ 0. 뒤로 가기" << endl << endl;
+        cout << "▷ ";
         cin >> num;
         cout << endl << endl;
 
         switch (num) {
             case 1:
+                system("cls");
                 cout << "현재 pw를 입력해주세요" << endl;
-                cout << ": ";
+                cout << "▷ ";
+                ch = ' ';
+                ch2 = ' ';
 
                 hpw = "";
 
@@ -516,8 +619,9 @@ void setting() {
                 if (result->next()) { //if문을 통한 조건 추가
 
                     while (1) {
-                        cout << "변경할 pw를 입력해주세요" << endl;
-                        cout << ": ";
+                        system("cls");
+                        cout << "▶ 변경할 pw를 입력해주세요" << endl << endl;
+                        cout << "▷ ";
                         spw = "";
                         ch = ' ';
                         while (ch != 13) { // Enter 키를 누르면 입력 종료
@@ -536,10 +640,11 @@ void setting() {
                         }
                         cout << endl << endl;
 
-                        cout << "한번 더 입력해주세요" << endl;
-                        cout << ": ";
+                        cout << "▶ 한번 더 입력해주세요" << endl << endl;
+                        cout << "▷ ";
 
-
+                        npw = "";
+                        ch2 = ' ';
                         while (ch2 != 13) { // Enter 키를 누르면 입력 종료
                             ch2 = _getch();
                             if (ch2 == 13) break; // Enter 키를 누르면 입력 종료
@@ -558,6 +663,7 @@ void setting() {
                         cout << endl << endl;
                         if (spw != npw) { //if문을 통한 일치여부 검사
                             cout << "비밀번호가 일치하지 않습니다. 다시 입력해주세요." << endl << endl;
+                            Sleep(1000);
                         }
                         else break;
                     }
@@ -568,54 +674,66 @@ void setting() {
                     result = pstmt->executeQuery();
 
                     cout << "PW 변경이 완료되었습니다." << endl << endl;
+                    cout << "1초 뒤 이전 페이지로 이동합니다." << endl;
+                    Sleep(1000);
                 }
                 break;
 
             case 2:
+                system("cls");
                 cout << "진심으로 회원탈퇴를 원하십니까?" << endl;
-                cout << "1. 그렇다 2. 아니오 0. 뒤로 가기" << endl;
+                cout << "▶ 1. 네" << endl << endl << "▶ 2. 아니오" << endl << endl;
                 cin >> c_num;
                 cout << endl << endl;
                 switch (c_num) {
                     case 1:
+                        system("cls");
                         pstmt = con->prepareStatement("DELETE FROM user WHERE id = ?;");
                         pstmt->setString(1, sid);
                         result = pstmt->executeQuery();
 
                         cout << "회원 탈퇴가 정상적으로 완료되었습니다." << endl;
                         cout << "이용해주셔서 감사했습니다." << endl;
+                        cout << "2초 뒤 자동으로 종료됩니다." << endl;
+                        Sleep(2000);
                         button = 1;
+                        o_button = 1;
                         break;
 
                     case 2:
                         cout << "회원 탈퇴가 취소되었습니다." << endl;
-                        break;
-
-                    case 0:
+                        Sleep(1000);
                         break;
 
                     default:
                         cout << "잘못된 입력입니다. 다시 입력해주세요." << endl;
+                        Sleep(1000);
                         break;
-                    }
+                }
+
             case 0:
+                system("cls");
                 button = 1;
                 break;
+
             default:
                 cout << "잘못된 입력입니다. 다시 입력해주세요." << endl;
+                cout << "1초 뒤 이전 페이지로 이동합니다." << endl;
+                Sleep(1000);
                 break;
-            }
+        }
 
         if (button == 1) {
             break;
         }
     }
     
+    return o_button;
 }
 
 int main()
 {
-    
+
     // MySQL 연결
     try {
         driver = sql::mysql::get_mysql_driver_instance();
@@ -637,12 +755,14 @@ int main()
     int num, button = 0;
 
     while (1) {
-        cout << "번호를 입력해주세요 1.로그인, 2. id 찾기, 3. pw 찾기, 4. 회원가입 0. 종료" << endl;
+        system("cls");
+        cout << ">> 번호를 입력해주세요 <<" << endl << endl;
+        cout << "▶ 1. 로그인" << endl << endl << "▶ 2. ID 찾기" << endl << endl << "▶ 3. PW 찾기" << endl << endl << "▶ 4. 회원가입" << endl << endl << "▶ 0. 종료" << endl << endl;
         cin >> num;
         switch (num) {
             case 1:
                 login();
-                button = 1;
+                button = 2;
                 break;
 
             case 2:
@@ -663,19 +783,26 @@ int main()
 
             default:
                 cout << "잘못된 입력입니다. 다시 입력해주세요." << endl;
+                cout << "1초 뒤 이전 페이지로 이동합니다." << endl;
+                Sleep(1000);
                 break;
             }
         if (button == 1) {
             break;
         }
+        else if (button == 2) {
+            break;
+        }
     }
-    button = 0;
 
-    while (1) {
-        cout << "번호를 입력해주세요 1.내 정보 보기, 2. 친구, 3. 채팅 4. 설정 0. 종료" << endl;
-        cin >> num;
-        cout << endl;
-        switch (num) {
+    if (button == 2) {
+        while (1) {
+            system("cls");
+            cout << ">> 번호를 입력해주세요 <<" << endl << endl;
+            cout << "▶ 1. 내 정보 보기" << endl << endl << "▶ 2. 친구" << endl << endl << "▶ 3. 채팅" << endl << endl << "▶ 4. 설정" << endl << endl << "▶ 0. 종료" << endl << endl;
+            cin >> num;
+            cout << endl;
+            switch (num) {
             case 1:
                 main_My_profile();
                 break;
@@ -689,22 +816,28 @@ int main()
                 break;
 
             case 4:
-                setting();
+                button = setting();
                 break;
 
             case 0:
-                button = 1;
+                system("cls");
+                
                 break;
 
             default:
+                system("cls");
                 cout << "잘못된 입력입니다. 다시 입력해주세요." << endl;
+                cout << "1초 뒤 이전 페이지로 이동합니다." << endl;
+                Sleep(1000);
                 break;
             }
 
-        if (button == 1) {
-            break;
+            if (button == 1) {
+                break;
+            }
         }
-   }
+    }
+    
 
     // MySQL Connector/C++ 정리
     delete pstmt;
@@ -713,3 +846,4 @@ int main()
     WSACleanup();
     return 0;
 }
+

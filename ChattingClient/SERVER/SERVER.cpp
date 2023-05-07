@@ -11,7 +11,7 @@
 #include <vector>
 
 #define MAX_SIZE 1024
-#define MAX_CLIENT 3
+#define MAX_CLIENT 10
 
 using std::cout;
 using std::cin;
@@ -143,22 +143,33 @@ void add_client() {
     new_client.sck = accept(server_sock.sck, (sockaddr*)&addr, &addrsize);
     recv(new_client.sck, buf, MAX_SIZE, 0); // Winsock2의 recv 함수. client가 보낸 닉네임을 받음.
     new_client.user = string(buf);
+    
+    bool reentry = false;
+    int index = 0;
+    for (int i = 0; i < sck_list.size(); i++) {
+        if (sck_list[i].user == new_client.user) {
+            reentry = true;
+            index = i;
+            break;
+        }
+    }
+
+
 
     string msg = "[공지] " + new_client.user + " 님이 입장했습니다.";
     cout << msg << endl;
-    sck_list.push_back(new_client); // client 정보를 담는 sck_list 배열에 새로운 client 추가
 
-    pstmt = con->prepareStatement("SELECT name, time, chat FROM chat;");
-    result = pstmt->executeQuery();
-    while (result->next()) {
-        cout << endl << "---------------------------------------------------------" << endl;
-        cout << "이름 : " << result->getString("name") << endl;
-        cout << "채팅 : " << result->getString("chat") << endl;
-        cout << "보낸 시간 : " << result->getString("time") << endl;
-        cout << "---------------------------------------------------------" << endl;
+    std::thread th;
+
+    if (reentry) { 
+        cout << "client socket " << new_client.sck;
+        sck_list[index].sck = new_client.sck; 
+        th = std::thread(recv_msg, index);
     }
-
-    std::thread th(recv_msg, client_count); // 다른 사람들로부터 오는 메시지를 계속해서 받을 수 있는 상태로 만들어 두기.
+    else {
+        sck_list.push_back(new_client); // client 정보를 담는 sck_list 배열에 새로운 client 추가
+        th = std::thread(recv_msg, client_count);  // 다른 사람들로부터 오는 메시지를 계속해서 받을 수 있는 상태로 만들어 두기
+    }
 
     client_count++; // client 수 증가.
     cout << "[공지] 현재 접속자 수 : " << client_count << "명" << endl;
@@ -180,13 +191,18 @@ void recv_msg(int idx) {
     while (1) {
         ZeroMemory(&buf, MAX_SIZE);
         if (recv(sck_list[idx].sck, buf, MAX_SIZE, 0) > 0) { // 오류가 발생하지 않으면 recv는 수신된 바이트 수를 반환. 0보다 크다는 것은 메시지가 왔다는 것.
-            msg = sck_list[idx].user + " : " + buf;
-            cout << msg << endl;
-            send_msg(msg.c_str());
-            pstmt = con->prepareStatement("INSERT INTO chat(name, time, chat) VALUES( ?, NOW(), ?);");
-            pstmt->setString(1, sck_list[idx].user);
-            pstmt->setString(2, buf);
-            result = pstmt->executeQuery();
+
+            if (string(buf) != "/quit") {
+                msg = sck_list[idx].user + " : " + buf;
+                cout << "  " << msg << endl;
+                send_msg(msg.c_str());
+
+                pstmt = con->prepareStatement("INSERT INTO chat(name, time, chat) VALUES( ?, NOW(), ?);");
+                pstmt->setString(1, sck_list[idx].user);
+                pstmt->setString(2, buf);
+                result = pstmt->executeQuery();
+            }
+            
         }
         else { //그렇지 않을 경우 퇴장에 대한 신호로 생각하여 퇴장 메시지 전송
             msg = "[공지] " + sck_list[idx].user + " 님이 퇴장했습니다.";
@@ -199,6 +215,8 @@ void recv_msg(int idx) {
 }
 
 void del_client(int idx) {
+    std::thread th(add_client);
     closesocket(sck_list[idx].sck);
     client_count--;
+    th.join();
 }
