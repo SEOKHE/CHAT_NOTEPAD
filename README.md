@@ -1,4 +1,4 @@
-# CHAT_NOTEPAD
+# CHATTING PROGRAM
 
 Visual Studio의 C++에서 소켓과 MYSQL 연동을 활요한 채팅 프로그램 (MAX 10 Client)
 
